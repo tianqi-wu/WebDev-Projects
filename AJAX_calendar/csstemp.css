@@ -1,0 +1,64 @@
+head {
+	color:black;
+	font-family: Verdana, sans-serif;
+}
+
+H1 {text-align: center;
+	color: blue;
+	font-family: Verdana, sans-serif;}
+
+article{
+	color: palevioletred;
+	font-family: Verdana, sans-serif;
+}
+
+body{
+	width: 760px; /* how wide to make your web page */
+	background-color:rgb(253, 196, 196); /* what color to make the background */
+	margin: 0 auto;
+    font:12px/16px Verdana, sans-serif; /* default font */
+    /*background: url("background.jpg");*/
+    background: url("https://i.loli.net/2019/06/19/5d09de8b04a6854579.jpg");
+    text-align : CENTER;
+    font-size:16px;
+    background-size: 1620px 1140px;
+}
+div#main{
+	background-color: #FFF;
+	margin: 0;
+	padding: 10px;
+}
+tr {
+    height: 93px;
+  }
+th{
+    width: 150px;
+    font: 20px/16px Verdana, sans-serif
+}
+
+.button1{
+    border-radius: 20px;
+    background-color:rgba(94, 94, 255, 0.068);
+    padding: 12px 26px;
+    font: 20px/16px Verdana, sans-serif
+}
+
+.button0{
+    border-radius: 8px;
+    background-color:rgba(94, 255, 142, 0.068);
+    padding: 8px 15px;
+    font: 16px/12px Verdana, sans-serif
+}
+
+h1{
+    font-family: 'Roboto Slab', sans-serif;
+
+}
+
+#holder1{
+    font: 20px/16px Verdana, sans-serif
+}
+
+footer{
+    color: rgba(94, 255, 142, 0.568);
+}

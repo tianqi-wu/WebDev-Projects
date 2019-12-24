@@ -1,0 +1,152 @@
+首先来分析一下下面要做什么。
+很显然所有东西都需要通过Ajax request进行操作。
+我们对于每一个页面都需要用ajax request
+整个loop循环里需要做两件事
+1.识别年月日，并且打印
+2.用Ajax对php使这个位置可以打印出结果
+然后mysql的entry如下：
+
+这个表格是用于分析calendar的entry的
+user_id
+时间 event内容
+
+
+
+
+previous
+
+after
+
+//已经实现了重要的功能。
+下一步的关键是怎么把这些部分扔进日历里。
+目前的想法是通过updateCalendar()进行操作。
+第一步是一旦进入function就call一遍updateCalendar(); 方法是//：：
+第二步则是对于按按钮之后的处理。方法是//：：s
+
+
+
+
+
+var tableHolder = document.getElementById("table");
+
+//Reference:
+var tbl = document.createElement("table");
+var tbody = document.createElement("tbody");
+  for (var row = 0; row < 7; row++) {
+    var tr = document.createElement("tr");
+    for (var column = 0; column < 7; column++) {
+        if(row==0){
+            var cell = document.createElement("th");
+      var cellText = document.createTextNode(newDays[column]);
+      cell.append(cellText);
+      tr.append(cell);
+        }else{
+      var cell = document.createElement("td");
+      /*We would need minor tweaks here.*/
+
+      var cellText = document.createTextNode("cell in row "+ row +", column "+column);
+      //      var cellText = '';
+      //https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Traversing_an_HTML_table_with_JavaScript_and_DOM_Interface.
+      cell.append(cellText);
+      tr.append(cell);
+      //end of reference
+        }
+    }
+    tbody.appendChild(tr);
+  }
+  //https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Traversing_an_HTML_table_with_JavaScript_and_DOM_Interface.
+  cell.append(cellText);
+  tbl.appendChild(tbody);
+  tableHolder.appendChild(tbl);  
+  //end of reference
+  tbl.setAttribute("border", "1");
+
+/* End of pure implementation of calendar sketch*/
+                
+
+///////
+
+
+
+
+
+
+
+function updateCalendar(){
+  var weeks = currentMonth.getWeeks();
+  //Assigning to InnerHTML here.
+  document.getElementById("holder1").innerHTML = newMonths[currentMonth.month]+" "+currentMonth.year;
+
+
+
+  /* The logic here is to create a table with Javascript.
+    We may have to add a table together.
+    The element is called "table" then, and then use "createElement" and "getElementById".
+    Key: Appending( append() ) and creating elements.
+
+*/
+var tableHolder = document.getElementById("table");
+
+//Reference:
+var tbl = document.createElement("table");
+var tbody = document.createElement("tbody");
+  for (var row = 0; row < 7; row++) {
+    var tr = document.createElement("tr");
+    for (var column = 0; column < 7; column++) {
+        if(row==0){
+            var cell = document.createElement("th");
+      var cellText = document.createTextNode(newDays[column]);
+      cell.append(cellText);
+      tr.append(cell);
+        }else{
+      var cell = document.createElement("td");
+      /*We would need minor tweaks here.*/
+
+      var cellText = document.createTextNode("cell in row "+ row +", column "+column);
+      //      var cellText = '';
+      //https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Traversing_an_HTML_table_with_JavaScript_and_DOM_Interface.
+      cell.append(cellText);
+      tr.append(cell);
+      //end of reference
+        }
+    }
+    tbody.appendChild(tr);
+  }
+  //https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Traversing_an_HTML_table_with_JavaScript_and_DOM_Interface.
+  cell.append(cellText);
+  tbl.appendChild(tbody);
+  tableHolder.appendChild(tbl);  
+  //end of reference
+  tbl.setAttribute("border", "1");
+
+/* End of pure implementation of calendar sketch*/
+                
+
+
+
+
+    for (var column = 0; column < 7; column++) {
+        var tr = document.createElement("tr");    
+        var cell = document.createElement("th");
+      var cellText = document.createTextNode(newDays[column]);
+      cell.append(cellText);
+      tr.append(cell);
+}
+
+先在底下加一个输入栏。
+输入栏具备功能：
+1. 一个holder，装好最终结果；
+2 几个输入栏。
+输入栏具体内容如下：
+
+event: date, time, title, content,group
+只需要这7个（大概）
+
+需要的东西如下：
+1. 事件ID
+2. 创建事件的人的ID(若没有login则INNERHTML返回无效)
+3. date, 
+4. time,
+5. title, 
+6. content,
+7. group.
