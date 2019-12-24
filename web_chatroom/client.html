@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+   <head>
+        <title>Andy's Chatting Client Ver 1.0.0</title>
+        <H1>Andy's Chatting Client Ver 1.0.0</H1>
+        <style type="text/css">
+        head {
+	color:black;
+	font-family: Verdana, sans-serif;
+}
+H1 {text-align: center;
+	color: blue;
+	font-family: Verdana, sans-serif;}
+
+body{
+	width: 760px; /* how wide to make your web page */
+	background-color:rgb(253, 196, 196); /* what color to make the background */
+	margin: 0 auto;
+    font:12px/16px Verdana, sans-serif; /* default font */
+    /*background: url("background.jpg");*/
+    /*background: url("https://i.loli.net/2019/06/19/5d09de8b04a6854579.jpg");*/
+    text-align : CENTER;
+    font-size:16px;
+    background-size: 1620px 1140px;
+}
+div#main{
+	background-color: #FFF;
+	margin: 0;
+	padding: 10px;
+}
+.button1{
+    border-radius: 20px;
+    background-color:rgba(94, 94, 255, 0.068);
+    padding: 12px 26px;
+    font: 20px/16px Verdana, sans-serif
+}
+
+.button0{
+    border-radius: 8px;
+    background-color:rgba(94, 255, 142, 0.068);
+    padding: 8px 15px;
+    font: 16px/12px Verdana, sans-serif
+}
+
+h1{
+    font-family: 'Roboto Slab', sans-serif;
+}
+
+footer{
+    color: rgba(94, 255, 142, 0.568);
+}
+            </style>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+      <script src="/socket.io/socket.io.js"></script>
+      <script type ="text/javascript">
+
+
+
+
+
+      /*
+            All changes starts here.
+            Aim: change something to make this webroom fully functional.
+      */
+      var socketio = io.connect();
+
+      
+//PennApple! PennApple!
+      socketio.on('connect', function(){
+		// call the server-side function 'adduser' and send one parameter (value of prompt)
+        socketio.emit('adduser', prompt("What's your name?"));
+	});
+
+
+    socketio.on('updatechat', function (username, data) {
+$('#conversation').html('<b>'+username + ':</b> ' + data + '<br>');
+var newmsg = username + ": " + data;
+
+//socketio.emit("message_to_server", {message:newmsg});
+        });
+
+
+        /*Here is some functions for loading the data.*/
+/*Similar to the post thing in the PHP thing. */
+/* Global Variables: 
+   CurrentRoom: the current room.
+
+   
+/*Gets the current chatroom.*/
+
+var currentRoom = 'RoomNull';
+socketio.on('postRoom',function(room){
+currentRoom = room;
+$('#chatroom_name').html("<b>You are currently in "+currentRoom+"</b>");
+});
+
+
+//Initialize the banned rooms.
+var bannedRooms = new Array();
+
+
+      socketio.on("message_to_client",function(data) {
+         //Append an HR thematic break and the escaped HTML of the new message
+         document.getElementById("chatlog").appendChild(document.createElement("hr"));
+         document.getElementById("chatlog").appendChild(document.createTextNode(data['message']));
+      });
+
+      function sendMessage(){
+         var msg = document.getElementById("message_input").value;
+         socketio.emit("message_to_server", {message:msg});
+      }
+
+      
+
+
+      ///New updates.
+/*
+      Updates ChatRoom here.
+*/
+function updateChatRoom(){
+         socketio.emit("updateChatRoom");
+
+      }
+
+      function existsInBanned(roomR){
+    for(var j = 0; j < bannedRooms.length; j++){
+                if(bannedRooms[j]==roomR){
+                   return 1;
+                }
+        }
+        return 0;
+}
+
+
+/*
+ Updates the existing chat rooms here.
+*/
+      socketio.on('updateChatRoom1',function(rooms){
+          var allrooms = "";
+			for(var i = 0; i < rooms.length; i++){
+                
+                allrooms+=('<b>'+ rooms[i] + ':</b> ');
+                if(currentRoom==rooms[i]){
+                    //ID for button: switchToRoom1
+                    allrooms+="<button class='button0' id = " + "'switchTo"+rooms[i]+"'"+"disabled>Switch(Current)</button><br>";
+                }else if(existsInBanned(rooms[i])){
+                    allrooms+="<button class='button0' id = " + "'switchTo"+rooms[i]+"'"+"disabled>Switch(Banned)</button><br>";
+                }
+            else{
+            allrooms+=("<button class='button0' id = " + "'switchTo"+rooms[i]+"'  onclick = switchRoom(this.id)"+">Switch</button>"+'<br>');
+            }
+        }
+
+        allrooms +="<div>Do you wish to make you own room?</div><br>";
+        allrooms +=" <input type='text' id='newRoomName'/>";
+        allrooms +="<button class='button0' onclick='createNewRoom()'>Create New Room</button>";
+        allrooms+="<input type='text' id='password'/> Password(for non-passwords leaves blank)<br>";
+        allrooms+="<button class='button0' onclick='hideChatRoom()'>hide chatrooms</button>";
+            $('#chatrooms').html(allrooms);
+
+            //setTimeout(hideChatRoom,15000);
+        });
+        
+
+
+
+        function createNewRoom(){
+            var password = "";
+            
+                password = ""+document.getElementById("password").value;
+            var roomName = document.getElementById("newRoomName").value;
+            socketio.emit("createNewRoom",roomName, password);
+        }
+
+
+
+//When you want to switch rooms with passwords
+
+    socketio.on("switchWithPassword",function(value){
+        socketio.emit("switchWithPassword1",value, prompt("What is the password? for"+ " room " +value));
+    });
+
+
+
+        socketio.on("getUsersInRoom",function(data){
+            $('#users').html(data);
+	});
+
+
+        socketio.on('updateusers', function(data) {
+		$('#users').empty();
+		$.each(data, function(key, value) {
+			$('#users').append('<div>' + key + '</div>');
+        });
+	});
+
+
+//General format:
+//<button class="button0" id="switchToRoom2">Switch</button>
+//Only for interating with server to confirm.
+    function switchRoom(name){
+        var realName = name.substring(8);
+        socketio.emit("switchRoom",realName);
+    }
+
+    //Interactive Private Message:
+    socketio.on("privateMessage1",function(data) {
+         //Append an HR thematic break and the escaped HTML of the new message
+         document.getElementById("chatlog").appendChild(document.createElement("hr"));
+         document.getElementById("chatlog").appendChild(document.createTextNode(data));
+      });
+
+
+
+      function sendPrivateMessage(){
+         var msg = document.getElementById("private_message").value;
+         var to = document.getElementById("private_message_to").value;
+         socketio.emit("privateMessage", to, msg);
+      }
+      //End of private message;
+
+      /*Creative Portion #1:
+      * Dynamically resizing the page
+      Technology used: onClick() function, innterHTML, etc.*/
+      function hideChatRoom(){
+          document.getElementById("chatrooms").innerHTML = "<button id = 'showChatRooms' class = 'button0' onclick = 'updateChatRoom()'>Show Chatrooms</button>"
+      }
+
+//load the page automatically while loading
+
+////////////////////
+/* Ban the user here.
+*/ 
+function banUser(){
+			var person = document.getElementById("exPerson").value;
+			socketio.emit("banUser", person);
+        }
+
+socketio.on('banUser1',function(roomName){
+    bannedRooms.push(roomName);
+    hideChatRoom();
+});
+
+        
+function kickUser(){
+    var person = document.getElementById("exPerson").value;
+			socketio.emit("kickUser", person);
+}
+
+function exterminateUser(){
+			var person = document.getElementById("exPerson").value;
+			socketio.emit("exterminateUser", person);
+		}
+
+
+socketio.on('updateClientName',function(username){
+    $('#client_name').html("<b> Hello, "+username+"</b>");
+});
+
+socketio.on("kickUser1", function(person){
+    socketio.emit("kickUser2",person,"Room1");
+});
+
+
+function clearChat(){
+    $('#chatlog').empty();
+}
+
+
+socketio.on("clearChat",function(variable){
+    clearChat();
+});
+
+socketio.on("initializeRoom",function(variable){
+    initializeRoom();
+    
+});
+
+socketio.on("updateChatRoom",function(variable){
+    updateChatRoom();
+});
+socketio.on("hideChatRoom",function(variable){
+hideChatRoom();
+});
+
+
+function initializeRoom(){
+    var emptyName = "";
+    socketio.emit("getName",emptyName);
+    socketio.on("getName1",function(res){
+        if(res=="true"){
+                //New Additions here.
+            document.getElementById("functions").innerHTML = 
+            "<div>You are the warden/creator. You can do the following</div><br>"+
+            "<input type='text' id='exPerson' placeholder='People to kick or ban'/>"+
+            "<button id = 'banUsers' class = 'button0' onclick = 'banUser()'> ban User</button>"+
+            "<button id = 'kickUsers' class = 'button0' onclick = 'kickUser()'> kick user</button>"+
+            "<button id = 'exterminateUsers' class = 'button0' onclick = 'exterminateUser()'> Exterminate!</button>";
+        }
+    });
+}
+//////
+
+$(function(){
+//updateChatRoom();
+hideChatRoom();
+initializeRoom();
+//Check whether you founded the chat room. 
+        });
+
+        var timeOuter = function(){
+        setTimeOut(500,function(){
+document.getElementById("showChatRooms").addEventListener("click", updateChatRoom, false);});
+        }
+    //End of update
+      </script>
+   </head>
+   <body>
+       <div id = "client_name"></div><div id = "chatroom_name"></div><br>
+       <h3 id = "current chatrooms">current chatrooms:</h3>
+       <div id = "chatrooms"></div> 
+        <h3 id = "current users">current users:</h3>
+       <div id = "users"></div> 
+        <h3 id ="client box">Client messages:</h3>
+        <div id="conversation"></div>
+        <input type="text" id="message_input"/>
+      <button class='button0' onclick="sendMessage()">send</button>
+      <input type="text" id="private_message" placeholder="private message"/>
+      <input type="text" id="private_message_to" placeholder="private message to who?"/>
+      <button class='button0' onclick="sendPrivateMessage()">send private message</button>
+      <br>
+      <div id = "functions"></div>
+      <div id="chatlog"></div>
+   </body>
+</html>
