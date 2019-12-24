@@ -1,0 +1,30 @@
+head {
+	color:black;
+	font-family: Verdana, sans-serif;
+}
+
+H1 {text-align: center;
+	color: blue;
+	font-family: Verdana, sans-serif;}
+
+article{
+	color: palevioletred;
+	font-family: Verdana, sans-serif;
+}
+
+body{
+	width: 760px; /* how wide to make your web page */
+	background-color:rgb(253, 196, 196); /* what color to make the background */
+	margin: 0 auto;
+	font:12px/16px Verdana, sans-serif; /* default font */
+}
+div#main{
+	background-color: #FFF;
+	margin: 0;
+	padding: 10px;
+}
+
+body{
+	text-align : CENTER;
+	font-size:16px;
+}
